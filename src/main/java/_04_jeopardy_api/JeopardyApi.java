@@ -39,14 +39,21 @@ public class JeopardyApi {
         //with the specified point value.
         //
         //Make sure to save the response as type Clue[].class in the bodyToMono() method call
-
+    	Clue[] results = webClient
+    			.get()
+    			.uri(uriBuilder -> uriBuilder
+                        .build())
+                .retrieve()
+                .bodyToMono(Clue[].class)
+                .block();
 
         //2
         //Get a random number less than the size of the Clue array
-
+    	Random gen = new Random();
+    	int x = gen.nextInt(results.length);
         //3
         //return the clue at the random index you just created
-
-        return null;
+    	
+        return results[x];
     }
 }
