@@ -6,7 +6,7 @@ Complete the units tests in src/test/java/_06_payroll/PayrollTest.java to ensure
 public class Payroll {
 
     public double calculatePaycheck(double hourlyWage, int numHours){
-        return hourlyWage * numHours;
+    	return hourlyWage * numHours;
     }
 
     public double calculateMileageReimbursement(int milesTraveled){
