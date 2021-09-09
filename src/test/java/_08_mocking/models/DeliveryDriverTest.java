@@ -13,36 +13,49 @@ class DeliveryDriverTest {
 
     DeliveryDriver deliveryDriver;
 
+    @Mock
+	CellPhone cell;
+    
+    @Mock
+    Car car;
+    
     @BeforeEach
     void setUp() {
-
+    	MockitoAnnotations.openMocks(this);
+    	deliveryDriver = new DeliveryDriver("John", car, cell);
     }
 
     @Test
     void itShouldWasteTime() {
         //given
-
+    	boolean expected= true;
+    	when(cell.browseCatMemes()).thenReturn(true);
         //when
-
+    	boolean actual = deliveryDriver.wasteTime();
         //then
+    	assertEquals(expected, actual);
     }
 
     @Test
     void itShouldRefuel() {
         //given
-
+    	boolean expected= true;
+    	when(car.fillTank(1)).thenReturn(true);
         //when
-
+    	boolean actual = deliveryDriver.refuel(1);
         //then
+    	assertEquals(expected, actual);
     }
 
     @Test
     void itShouldContactCustomer() {
         //given
-
+    	boolean expected= true;
+    	when(cell.call("9")).thenReturn(true);
         //when
-
+    	boolean actual = deliveryDriver.contactCustomer("9");
         //then
+    	assertEquals(expected, actual);
     }
 
 }

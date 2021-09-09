@@ -17,36 +17,64 @@ class MyDonutShopTest {
 
     MyDonutShop myDonutShop;
 
+    @Mock
+	PaymentService  paymentService;
+    
+	@Mock
+	BakeryService bakeryService;
+	
+	@Mock
+	DeliveryService deliveryService;
+    
     @BeforeEach
     void setUp() {
-
+    	MockitoAnnotations.openMocks(this);
+		myDonutShop = new MyDonutShop(paymentService, deliveryService, bakeryService);
     }
 
     @Test
-    void itShouldTakeDeliveryOrder() throws Exception {
-        //given
+	void itShouldTakeDeliveryOrder() throws Exception {
+		// given
+		Order order = new Order("John", "9", 2, 2, "1234567890", true);
+		when(paymentService.charge(order)).thenReturn(true);
+		when(bakeryService.getDonutsRemaining()).thenReturn(2);
+		
+		// when
+		myDonutShop.openForTheDay();
+		myDonutShop.takeOrder(order);
+		
+		// then
+		verify(deliveryService,times(1)).scheduleDelivery(order);
+	}
 
-        //when
+	@Test
+	void givenInsufficientDonutsRemaining_whenTakeOrder_thenThrowIllegalArgumentException() {
+		// given
+		Order order = new Order("John", "9", 5, 2, "1234567890", true);
+		when(paymentService.charge(order)).thenReturn(true);
+		when(bakeryService.getDonutsRemaining()).thenReturn(0);
+		
+		// when
+		myDonutShop.openForTheDay();
+		
+		// then
+		Throwable exception  = assertThrows(IllegalArgumentException.class,()->myDonutShop.takeOrder(order));
+		assertEquals(exception.getMessage(), "Insufficient donuts remaining");
+	}
 
-        //then
-    }
+	@Test
+	void givenNotOpenForBusiness_whenTakeOrder_thenThrowIllegalStateException() {
+		// given
+		Order order = new Order("John", "9", 5, 2, "1234567890", true);
+		when(paymentService.charge(order)).thenReturn(true);
+		
+		// when
+		myDonutShop.openForTheDay();
+		
+		// then
+		Throwable exception  = assertThrows(IllegalArgumentException.class,()->myDonutShop.takeOrder(order));
+		assertEquals(exception.getMessage(), "Insufficient donuts remaining");
+	}
 
-    @Test
-    void givenInsufficientDonutsRemaining_whenTakeOrder_thenThrowIllegalArgumentException() {
-        //given
-
-        //when
-
-        //then
-    }
-
-    @Test
-    void givenNotOpenForBusiness_whenTakeOrder_thenThrowIllegalStateException(){
-        //given
-
-        //when
-
-        //then
-    }
 
 }
